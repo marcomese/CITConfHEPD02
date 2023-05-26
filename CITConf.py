@@ -14,20 +14,21 @@ class mainWin(QMainWindow, Ui_MainWindow):
         self.initUi()
 
     def initUi(self):
-        self.initComboBoxes(self.cmbBoxTR1HG, HGValidGains, 75.0)
-        self.initComboBoxes(self.cmbBoxTR1LG, LGValidGains, 7.5)
-        self.initComboBoxes(self.cmbBoxTR2HG, HGValidGains, 75.0)
-        self.initComboBoxes(self.cmbBoxTR2LG, LGValidGains, 7.5)
-        self.initComboBoxes(self.cmbBoxRANHG, HGValidGains, 75.0)
-        self.initComboBoxes(self.cmbBoxRANLG, LGValidGains, 7.5)
-        self.initComboBoxes(self.cmbBoxLYSOHG, HGValidGains, 10.0)
-        self.initComboBoxes(self.cmbBoxLYSOLG, LGValidGains, 1.5)
-        self.initComboBoxes(self.cmbBoxLATBOTHG, HGValidGains, 75.0)
-        self.initComboBoxes(self.cmbBoxLATBOTLG, LGValidGains, 7.5)
+        self.initComboBoxes(self.cmbTR1HG, HGValidGains, 75.0)
+        self.initComboBoxes(self.cmbTR1LG, LGValidGains, 7.5)
+        self.initComboBoxes(self.cmbTR2HG, HGValidGains, 75.0)
+        self.initComboBoxes(self.cmbTR2LG, LGValidGains, 7.5)
+        self.initComboBoxes(self.cmbRANHG, HGValidGains, 75.0)
+        self.initComboBoxes(self.cmbRANLG, LGValidGains, 7.5)
+        self.initComboBoxes(self.cmbLYSOHG, HGValidGains, 10.0)
+        self.initComboBoxes(self.cmbLYSOLG, LGValidGains, 1.5)
+        self.initComboBoxes(self.cmbLATBOTHG, HGValidGains, 75.0)
+        self.initComboBoxes(self.cmbLATBOTLG, LGValidGains, 7.5)
 
         for i in range(17):
+            item = "0x"+f"{i+9:08x}".upper()
             self.tblOutput.insertRow(i)
-            self.tblOutput.setItem(i , 0, QTableWidgetItem("0x"+f"{i+9:08x}".upper()))
+            self.tblOutput.setItem(i , 0, QTableWidgetItem(item))
         
         self.btnGen.clicked.connect(self.genConf)
 
@@ -39,16 +40,16 @@ class mainWin(QMainWindow, Ui_MainWindow):
         timeThr = int(self.txtTimeThr.text())
         chargeThr = int(self.txtChargeThr.text())
         
-        tr1Gains = [float(self.cmbBoxTR1HG.currentText()),
-                    float(self.cmbBoxTR1LG.currentText())]
-        tr2Gains = [float(self.cmbBoxTR2HG.currentText()),
-                    float(self.cmbBoxTR2LG.currentText())]
-        ranGains = [float(self.cmbBoxRANHG.currentText()),
-                    float(self.cmbBoxRANLG.currentText())]
-        lysoGains = [float(self.cmbBoxLYSOHG.currentText()),
-                     float(self.cmbBoxLYSOLG.currentText())]
-        latbotGains =  [float(self.cmbBoxLATBOTHG.currentText()),
-                        float(self.cmbBoxLATBOTLG.currentText())]
+        tr1Gains = [float(self.cmbTR1HG.currentText()),
+                    float(self.cmbTR1LG.currentText())]
+        tr2Gains = [float(self.cmbTR2HG.currentText()),
+                    float(self.cmbTR2LG.currentText())]
+        ranGains = [float(self.cmbRANHG.currentText()),
+                    float(self.cmbRANLG.currentText())]
+        lysoGains = [float(self.cmbLYSOHG.currentText()),
+                     float(self.cmbLYSOLG.currentText())]
+        latbotGains =  [float(self.cmbLATBOTHG.currentText()),
+                        float(self.cmbLATBOTLG.currentText())]
 
         for i in range(5):
             self.gains[f'ch{i:02d}']['hg'] = tr1Gains[0]
