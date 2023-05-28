@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(874, 643)
+        MainWindow.resize(687, 584)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setMinimumSize(QtCore.QSize(0, 0))
         self.centralwidget.setObjectName("centralwidget")
@@ -247,11 +247,11 @@ class Ui_MainWindow(object):
         self.scrollArea = QtWidgets.QScrollArea(self.tabChannels)
         self.scrollArea.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.scrollArea.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.scrollArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.scrollArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrlAreaCnt = QtWidgets.QWidget()
-        self.scrlAreaCnt.setGeometry(QtCore.QRect(0, 0, 402, 527))
+        self.scrlAreaCnt.setGeometry(QtCore.QRect(0, 0, 400, 489))
         self.scrlAreaCnt.setObjectName("scrlAreaCnt")
         self.vLayScroll = QtWidgets.QVBoxLayout(self.scrlAreaCnt)
         self.vLayScroll.setObjectName("vLayScroll")

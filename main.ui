@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>874</width>
-    <height>643</height>
+    <width>687</width>
+    <height>584</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -371,7 +371,7 @@
              <enum>QFrame::Plain</enum>
             </property>
             <property name="verticalScrollBarPolicy">
-             <enum>Qt::ScrollBarAlwaysOn</enum>
+             <enum>Qt::ScrollBarAsNeeded</enum>
             </property>
             <property name="widgetResizable">
              <bool>true</bool>
@@ -381,8 +381,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>402</width>
-               <height>527</height>
+               <width>400</width>
+               <height>489</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="vLayScroll"/>
