@@ -2,7 +2,8 @@
 
 import sys
 from PyQt5.QtWidgets import (QMainWindow, QApplication, QTableWidgetItem,
-                             QLabel, QHBoxLayout, QComboBox, QCheckBox)
+                             QLabel, QHBoxLayout, QComboBox,
+                             QCheckBox, QFileDialog)
 from mainGUI import Ui_MainWindow
 from citSupportLib import HGValidGains, LGValidGains
 from getCITConfig import getConf, defGains
@@ -28,6 +29,7 @@ class mainWin(QMainWindow, Ui_MainWindow):
 
         self.btnGen.clicked.connect(self.genConf)
         self.btnCopy.clicked.connect(self.copyToClipboard)
+        self.btnSave.clicked.connect(self.saveToFile)
 
     def initComboBox(self, cmb, validGains, defGain):
         cmb.addItems([str(v) for v in validGains])
@@ -170,6 +172,13 @@ class mainWin(QMainWindow, Ui_MainWindow):
             clipTxt += f" {v}"
 
         self.clipboard.setText(clipTxt.upper())
+
+    def saveToFile(self):
+        fileName, fileType = QFileDialog.getSaveFileName(filter="Text files (*.txt)")
+
+        with open(fileName,"w") as f:
+            for v in self.cConf.values():
+                f.write(f"0x{v.upper()}\n")
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
