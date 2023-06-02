@@ -3,7 +3,7 @@
 import sys
 from PyQt5.QtWidgets import (QMainWindow, QApplication, QTableWidgetItem,
                              QLabel, QHBoxLayout, QComboBox,
-                             QCheckBox, QFileDialog)
+                             QCheckBox, QFileDialog, QMessageBox)
 from mainGUI import Ui_MainWindow
 from citSupportLib import HGValidGains, LGValidGains
 from getCITConfig import getConf, defGains
@@ -165,6 +165,7 @@ class mainWin(QMainWindow, Ui_MainWindow):
 
     def copyToClipboard(self):
         if self.cConf is None:
+            self.errorMsg()
             return
 
         clipTxt = "03"        
@@ -174,11 +175,27 @@ class mainWin(QMainWindow, Ui_MainWindow):
         self.clipboard.setText(clipTxt.upper())
 
     def saveToFile(self):
+        if self.cConf is None:
+            self.errorMsg()
+            return
+
         fileName, fileType = QFileDialog.getSaveFileName(filter="Text files (*.txt)")
+
+        if fileName == '':
+            return
 
         with open(fileName,"w") as f:
             for v in self.cConf.values():
                 f.write(f"0x{v.upper()}\n")
+
+    def errorMsg(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setText("Generate the configuration before proceeding!")
+        msg.setWindowTitle("Configuration not generated!")
+        msg.setStandardButtons(QMessageBox.Ok)
+
+        msg.exec()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
