@@ -5,8 +5,18 @@ from PyQt5.QtWidgets import (QMainWindow, QApplication, QTableWidgetItem,
                              QLabel, QHBoxLayout, QComboBox,
                              QCheckBox, QFileDialog, QMessageBox)
 from mainGUI import Ui_MainWindow
-from citSupportLib import HGValidGains, LGValidGains
+from citSupportLib import HGValidGains, LGValidGains, InCALIBValidGains
 from getCITConfig import getConf, defGains
+import re
+
+channelPattern = "Ch(\d\d?)"
+chRegex = re.compile(channelPattern)
+
+plastDefGainHG = 75.0
+plastDefGainLG = 7.5
+lysoDefGainHG = 10.0
+lysoDefGainLG = 1.5
+inCalibDefGain = 15.0
 
 class mainWin(QMainWindow, Ui_MainWindow):
     def __init__(self, clipBoard):
@@ -32,20 +42,21 @@ class mainWin(QMainWindow, Ui_MainWindow):
         self.btnSave.clicked.connect(self.saveToFile)
 
     def initComboBox(self, cmb, validGains, defGain):
+        cmb.clear()
         cmb.addItems([str(v) for v in validGains])
         cmb.setCurrentIndex(validGains.index(defGain))
 
     def initGroupTab(self):
-        self.initComboBox(self.cmbTR1HG, HGValidGains, 75.0)
-        self.initComboBox(self.cmbTR1LG, LGValidGains, 7.5)
-        self.initComboBox(self.cmbTR2HG, HGValidGains, 75.0)
-        self.initComboBox(self.cmbTR2LG, LGValidGains, 7.5)
-        self.initComboBox(self.cmbRANHG, HGValidGains, 75.0)
-        self.initComboBox(self.cmbRANLG, LGValidGains, 7.5)
-        self.initComboBox(self.cmbLYSOHG, HGValidGains, 10.0)
-        self.initComboBox(self.cmbLYSOLG, LGValidGains, 1.5)
-        self.initComboBox(self.cmbLATBOTHG, HGValidGains, 75.0)
-        self.initComboBox(self.cmbLATBOTLG, LGValidGains, 7.5)
+        self.initComboBox(self.cmbTR1HG,    HGValidGains, plastDefGainHG)
+        self.initComboBox(self.cmbTR1LG,    LGValidGains, plastDefGainLG)
+        self.initComboBox(self.cmbTR2HG,    HGValidGains, plastDefGainHG)
+        self.initComboBox(self.cmbTR2LG,    LGValidGains, plastDefGainLG)
+        self.initComboBox(self.cmbRANHG,    HGValidGains, plastDefGainHG)
+        self.initComboBox(self.cmbRANLG,    LGValidGains, plastDefGainLG)
+        self.initComboBox(self.cmbLYSOHG,   HGValidGains, lysoDefGainHG)
+        self.initComboBox(self.cmbLYSOLG,   LGValidGains, lysoDefGainLG)
+        self.initComboBox(self.cmbLATBOTHG, HGValidGains, plastDefGainHG)
+        self.initComboBox(self.cmbLATBOTLG, LGValidGains, plastDefGainLG)
 
     def initSingleChTab(self):
         self.hLaySingleCh = []
@@ -55,8 +66,8 @@ class mainWin(QMainWindow, Ui_MainWindow):
         self.sChInCalib   = []
         self.sChDisabled  = []
         for i in range(32):
-            initValHG = 75.0 if (i < 21 or i > 26) else 10.0
-            initValLG = 7.5 if (i < 21 or i > 26) else 1.5
+            initValHG = plastDefGainHG if (i < 21 or i > 26) else lysoDefGainHG
+            initValLG = plastDefGainLG if (i < 21 or i > 26) else lysoDefGainLG
 
             hLaySCh = QHBoxLayout()
             hLaySCh.setObjectName(f"hLaySingleCh{i}")
@@ -76,6 +87,7 @@ class mainWin(QMainWindow, Ui_MainWindow):
             cmbInCalib = QComboBox()
             cmbInCalib.setObjectName(f"cmbInCalibCh{i}")
             cmbInCalib.addItems(["None","HG","LG"])
+            cmbInCalib.currentIndexChanged.connect(self.cmbInCalibGains)
 
             chkDisabled = QCheckBox()
             chkDisabled.setObjectName(f"chkDisabledCh{i}")
@@ -96,6 +108,44 @@ class mainWin(QMainWindow, Ui_MainWindow):
             self.hLaySingleCh.append(hLaySCh)
 
             self.vLayScroll.addLayout(hLaySCh)
+
+    def cmbInCalibGains(self):
+        sender = self.sender()
+        selectedGain = sender.currentText()
+        cmbName = sender.objectName()
+        channel = chRegex.findall(cmbName)
+
+        if channel == []:
+            return
+        
+        ch = int(channel[0])
+
+        cmbHG = self.findChild(QComboBox, f"cmbHGCh{ch}")
+        cmbLG = self.findChild(QComboBox, f"cmbLGCh{ch}")
+
+        defHG = plastDefGainHG if (ch < 21 or ch > 26) else lysoDefGainHG
+        defLG = plastDefGainLG if (ch < 21 or ch > 26) else lysoDefGainLG
+
+        if selectedGain == "HG":
+            hgGainSel = InCALIBValidGains
+            lgGainSel = LGValidGains
+            initValHG = inCalibDefGain
+            initValLG = defLG
+
+        elif selectedGain == "LG":
+            hgGainSel = HGValidGains
+            lgGainSel = InCALIBValidGains
+            initValHG = defHG
+            initValLG = inCalibDefGain
+
+        else:
+            hgGainSel = HGValidGains
+            lgGainSel = LGValidGains
+            initValHG = defHG
+            initValLG = defLG
+
+        self.initComboBox(cmbHG, hgGainSel, initValHG)
+        self.initComboBox(cmbLG, lgGainSel, initValLG)
 
     def genConf(self):
         selectedTab = self.tabGroupOrCh.currentIndex()
