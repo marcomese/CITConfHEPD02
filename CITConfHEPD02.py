@@ -12,11 +12,11 @@ import re
 channelPattern = "Ch(\d\d?)"
 chRegex = re.compile(channelPattern)
 
-plastDefGainHG = 75.0
-plastDefGainLG = 7.5
+plastDefGainHG = 20.0
+plastDefGainLG = 2.0
 lysoDefGainHG = 10.0
 lysoDefGainLG = 1.5
-inCalibDefGain = 15.0
+inCalibDefGain = 4.0
 
 class mainWin(QMainWindow, Ui_MainWindow):
     def __init__(self, clipBoard):
